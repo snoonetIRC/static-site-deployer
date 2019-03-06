@@ -42,7 +42,7 @@ def check_for_update(args):
         sys.exit("No assets currently deployed")
 
     asset = get_latest_release_asset(repo)
-    if asset['id'] != current_id:
+    if str(asset['id']) != current_id:
         sys.exit("Assets out of date")
 
     sys.exit(0)
