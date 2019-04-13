@@ -14,7 +14,11 @@ ASSET_ID_FILE = '.asset_id'
 CURRENT_PATH = 'current'
 RELEASES_PATH = 'releases'
 
-RELEASE_URL = 'https://api.github.com/repos/{repo}/releases/latest'
+RELEASE_URL = 'https://api.github.com/repos/{repo}/releases'
+
+
+def _release_filter(release):
+    return not release['draft'] and not release['prerelease'] and release['assets']
 
 
 def get_latest_release_asset(repo):
@@ -22,7 +26,12 @@ def get_latest_release_asset(repo):
         response.raise_for_status()
         data = response.json()
 
-    return data['assets'][0]
+    release = next(filter(_release_filter, data), None)
+
+    if release is None:
+        raise ValueError("Unable to find matching release")
+
+    return release['assets'][0]
 
 
 def check_for_update(args):
