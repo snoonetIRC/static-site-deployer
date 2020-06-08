@@ -15,7 +15,7 @@ from shutil import rmtree
 
 ASSET_ID_FILE = '.asset_id'
 CURRENT_PATH = 'current'
-HISTORY_COUNT = 1
+HISTORY_COUNT = 5
 RELEASES_PATH = 'releases'
 
 RELEASE_URL = 'https://api.github.com/repos/{repo}/releases'
