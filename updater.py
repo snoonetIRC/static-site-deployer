@@ -9,6 +9,7 @@ import tarfile
 from pathlib import Path
 
 import requests
+from distutils.version import StrictVersion
 from docopt import docopt
 from shutil import rmtree
 
@@ -16,6 +17,7 @@ ASSET_ID_FILE = '.asset_id'
 CURRENT_PATH = 'current'
 HISTORY_COUNT = 5
 RELEASES_PATH = 'releases'
+RELEASE_PREFIX = 'website-v'
 
 RELEASE_URL = 'https://api.github.com/repos/{repo}/releases'
 
@@ -97,18 +99,20 @@ def do_update(args):
 
 
 def do_cleanup(releases_dir, latest_release):
-    files = os.listdir(releases_dir)
+    directories = os.listdir(releases_dir)
     removed = 0
 
-    if len(files) <= HISTORY_COUNT:
+    if len(directories) <= HISTORY_COUNT:
         print('Did not run clean-up (too few historic releases)')
         return
 
-    files.sort(reverse=True)
+    versions = [directory.replace(RELEASE_PREFIX, '') for directory in directories]
+    versions.sort(key=StrictVersion, reverse=True)
 
-    for f in files[HISTORY_COUNT:]:
-        if f != latest_release:
-            rmtree(releases_dir / f)
+    for version in versions[HISTORY_COUNT:]:
+        if version != latest_release:
+            release_name = RELEASE_PREFIX + version
+            rmtree(releases_dir / release_name)
             removed += 1
         else:
             print('Cannot remove most recent release!')
