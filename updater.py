@@ -3,15 +3,19 @@ Usage:
     updater.py check <repo> <path>
     updater.py update <repo> <path>
 """
+import os
 import sys
 import tarfile
 from pathlib import Path
+from pprint import pprint
 
 import requests
 from docopt import docopt
+from shutil import rmtree
 
 ASSET_ID_FILE = '.asset_id'
 CURRENT_PATH = 'current'
+HISTORY_COUNT = 1
 RELEASES_PATH = 'releases'
 
 RELEASE_URL = 'https://api.github.com/repos/{repo}/releases'
@@ -89,6 +93,31 @@ def do_update(args):
 
     current_link.symlink_to(release_dir, target_is_directory=True)
     print('Deployed', release_name)
+
+    do_cleanup(releases_dir, release_name)
+
+
+def do_cleanup(releases_dir, latest_release):
+    files = os.listdir(releases_dir)
+    removed = 0
+
+    if len(files) <= HISTORY_COUNT:
+        print('Did not run clean-up (too few historic releases)')
+        return
+
+    files.sort(reverse=True)
+
+    for f in files[HISTORY_COUNT:]:
+        if f != latest_release:
+            rmtree(releases_dir / f)
+            removed += 1
+        else:
+            print('Cannot remove most recent release!')
+    else:
+        print('Did not run clean up (too few historic releases)')
+
+    if removed > 0:
+        print(f'Cleaned up {removed} historic releases')
 
 
 def main():
