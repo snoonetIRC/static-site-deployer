@@ -7,7 +7,6 @@ import os
 import sys
 import tarfile
 from pathlib import Path
-from pprint import pprint
 
 import requests
 from docopt import docopt
@@ -113,8 +112,6 @@ def do_cleanup(releases_dir, latest_release):
             removed += 1
         else:
             print('Cannot remove most recent release!')
-    else:
-        print('Did not run clean up (too few historic releases)')
 
     if removed > 0:
         print(f'Cleaned up {removed} historic releases')
