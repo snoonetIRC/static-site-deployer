@@ -3,16 +3,21 @@ Usage:
     updater.py check <repo> <path>
     updater.py update <repo> <path>
 """
+import os
 import sys
 import tarfile
 from pathlib import Path
 
 import requests
+from distutils.version import StrictVersion
 from docopt import docopt
+from shutil import rmtree
 
 ASSET_ID_FILE = '.asset_id'
 CURRENT_PATH = 'current'
+HISTORY_COUNT = 5
 RELEASES_PATH = 'releases'
+RELEASE_PREFIX = 'website-v'
 
 RELEASE_URL = 'https://api.github.com/repos/{repo}/releases'
 
@@ -89,6 +94,35 @@ def do_update(args):
 
     current_link.symlink_to(release_dir, target_is_directory=True)
     print('Deployed', release_name)
+
+    do_cleanup(releases_dir, release_name)
+
+
+def do_cleanup(releases_dir, latest_release):
+    directories = os.listdir(releases_dir)
+    removed = 0
+
+    if len(directories) <= HISTORY_COUNT:
+        print('Did not run clean up (too few historic releases)')
+        return
+
+    # Trim "website-v" prefix for sorting with distutils.version
+    versions = [directory.replace(RELEASE_PREFIX, '') for directory in directories]
+    versions.sort(key=StrictVersion, reverse=True)
+
+    for version in versions[HISTORY_COUNT:]:
+        if RELEASE_PREFIX + version != latest_release:
+            # Replace the prefix for purging
+            release_name = RELEASE_PREFIX + version
+            rmtree(releases_dir / release_name)
+            removed += 1
+        else:
+            print('Cannot remove most recent release!')
+
+    if removed > 0:
+        print(f'Cleaned up {removed} historic releases')
+    else:
+        print('No clean up required')
 
 
 def main():
