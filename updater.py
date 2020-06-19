@@ -100,27 +100,22 @@ def do_update(args):
 
 def do_cleanup(releases_dir, latest_release):
     directories = os.listdir(releases_dir)
-    removed = 0
 
     if len(directories) <= HISTORY_COUNT:
         print('Did not run clean up (too few historic releases)')
         return
 
-    # Trim "website-v" prefix for sorting with distutils.version
-    versions = [directory.replace(RELEASE_PREFIX, '') for directory in directories]
-    versions.sort(key=StrictVersion, reverse=True)
+    def key(d):
+        return StrictVersion(d.replace(RELEASE_PREFIX, ''))
 
-    for version in versions[HISTORY_COUNT:]:
-        if RELEASE_PREFIX + version != latest_release:
-            # Replace the prefix for purging
-            release_name = RELEASE_PREFIX + version
-            rmtree(releases_dir / release_name)
-            removed += 1
-        else:
-            print('Cannot remove most recent release!')
+    directories.sort(key=key, reverse=True)
 
-    if removed > 0:
-        print(f'Cleaned up {removed} historic releases')
+    to_remove = directories[HISTORY_COUNT:]
+    for directory in to_remove:
+        rmtree(releases_dir / directory)
+
+    if to_remove:
+        print(f'Cleaned up {len(to_remove)} historic releases')
     else:
         print('No clean up required')
 
