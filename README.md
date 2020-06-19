@@ -20,4 +20,3 @@ cleans up all but the five most recent releases from the directory.
 ```
 python3 updater.py update snoonetIRC/static-web path/to/website/dir
 ```
-
