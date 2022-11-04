@@ -81,7 +81,26 @@ def do_update(args):
         asset["url"], stream=True, headers={"Accept": "application/octet-stream",}
     ) as response:
         with tarfile.open(fileobj=response.raw, mode="r|*") as tarball:
-            tarball.extractall(path=str(release_dir))
+            def is_within_directory(directory, target):
+                
+                abs_directory = os.path.abspath(directory)
+                abs_target = os.path.abspath(target)
+            
+                prefix = os.path.commonprefix([abs_directory, abs_target])
+                
+                return prefix == abs_directory
+            
+            def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+            
+                for member in tar.getmembers():
+                    member_path = os.path.join(path, member.name)
+                    if not is_within_directory(path, member_path):
+                        raise Exception("Attempted Path Traversal in Tar File")
+            
+                tar.extractall(path, members, numeric_owner=numeric_owner) 
+                
+            
+            safe_extract(tarball, path=str(release_dir))
 
     # Record the ID of this asset for later update checks
     with open(str(release_dir / ASSET_ID_FILE), "w") as f:
