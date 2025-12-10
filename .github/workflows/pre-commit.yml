@@ -10,11 +10,11 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1
     - id: setup-python
-      uses: actions/setup-python@v1
-    - uses: actions/cache@v1
+      uses: actions/setup-python@0f07f7f756721ebd886c2462646a35f78a8bc4de # v1
+    - uses: actions/cache@f5ce41475b483ad7581884324a6eca9f48f8dcc7 # v1
       with:
         path: ~/.cache/pre-commit
         key: pre-commit-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('.pre-commit-config.yaml') }}
-    - uses: pre-commit/action@v1.1.0
+    - uses: pre-commit/action@9bd158a6bde10490bb3bec5a1c00cb8a6e5257e2 # v1.1.0
