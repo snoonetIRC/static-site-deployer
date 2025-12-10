@@ -1,0 +1,75 @@
+name: Python tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+  HATCH_VERSION: "1.16.1"
+
+jobs:
+  test:
+    permissions:
+      contents: read
+      id-token: write
+
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        python-version:
+          - '3.10'
+          - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
+    name: "Test on ${{matrix.os}} with Python ${{matrix.python-version}}"
+    steps:
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+      with:
+        python-version: "${{matrix.python-version}}"
+        cache: "pip"
+
+    - name: Install Hatch
+      uses: pypa/hatch@install
+      with:
+        version: "${{ env.HATCH_VERSION }}"
+
+    - name: Run type check
+      run: hatch run types:check
+
+    - name: Run formatter
+      run: hatch fmt --check
+
+    - name: Run pre-commit
+      run: hatch run pre-commit:run
+      env:
+        SKIP: nitpick,hatch-fmt,hatch-types
+
+    - name: Run tests
+      run: hatch test --python ${{ matrix.python-version }} --cover --randomize --retries 2 --retry-delay 1
+
+    - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+      with:
+        name: "build-${{ matrix.python-version }}"
+        fail_ci_if_error: true
+        use_oidc: true
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1.1.1
+      with:
+        name: build-${{ matrix.python-version }}
+        fail_ci_if_error: true
+        use_oidc: true
