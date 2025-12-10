@@ -17,4 +17,4 @@ jobs:
       with:
         path: ~/.cache/pre-commit
         key: pre-commit-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('.pre-commit-config.yaml') }}
-    - uses: pre-commit/action@9bd158a6bde10490bb3bec5a1c00cb8a6e5257e2 # v1.1.0
+    - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
