@@ -63,39 +63,6 @@ def check_for_update(args):
     sys.exit(0)
 
 
-def do_update(args):
-    deploy_path = Path(args["<path>"]).resolve()
-    releases_dir = deploy_path / RELEASES_PATH
-    current_link = deploy_path / CURRENT_PATH
-
-    asset = get_latest_release_asset(args["<repo>"])
-
-    # Requires that the asset be '<name>.tar.gz'
-    release_name = asset["name"].rsplit(".", 2)[0]
-
-    release_dir = releases_dir / release_name
-    if not release_dir.exists():
-        release_dir.mkdir(parents=True)
-
-    with requests.get(
-        asset["url"], stream=True, headers={"Accept": "application/octet-stream",}
-    ) as response:
-        with tarfile.open(fileobj=response.raw, mode="r|*") as tarball:
-            tarball.extractall(path=str(release_dir))
-
-    # Record the ID of this asset for later update checks
-    with open(str(release_dir / ASSET_ID_FILE), "w") as f:
-        print(asset["id"], file=f)
-
-    if current_link.is_symlink():
-        current_link.unlink()
-
-    current_link.symlink_to(release_dir, target_is_directory=True)
-    print("Deployed", release_name)
-
-    do_cleanup(releases_dir, release_name)
-
-
 def do_cleanup(releases_dir, latest_release):
     directories = os.listdir(releases_dir)
 
@@ -116,6 +83,43 @@ def do_cleanup(releases_dir, latest_release):
         print(f"Cleaned up {len(to_remove)} historic releases")
     else:
         print("No clean up required")
+
+
+def do_update(args):
+    deploy_path = Path(args["<path>"]).resolve()
+    releases_dir = deploy_path / RELEASES_PATH
+    current_link = deploy_path / CURRENT_PATH
+
+    asset = get_latest_release_asset(args["<repo>"])
+
+    # Requires that the asset be '<name>.tar.gz'
+    release_name = asset["name"].rsplit(".", 2)[0]
+
+    release_dir = releases_dir / release_name
+    if not release_dir.exists():
+        release_dir.mkdir(parents=True)
+
+    with requests.get(
+        asset["url"],
+        stream=True,
+        headers={
+            "Accept": "application/octet-stream",
+        },
+    ) as response:
+        with tarfile.open(fileobj=response.raw, mode="r|*") as tarball:
+            tarball.extractall(path=str(release_dir))
+
+    # Record the ID of this asset for later update checks
+    with open(str(release_dir / ASSET_ID_FILE), "w") as f:
+        print(asset["id"], file=f)
+
+    if current_link.is_symlink():
+        current_link.unlink()
+
+    current_link.symlink_to(release_dir, target_is_directory=True)
+    print("Deployed", release_name)
+
+    do_cleanup(releases_dir, release_name)
 
 
 def main():
