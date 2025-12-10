@@ -71,6 +71,32 @@ repos:
       - id: codespell
         additional_dependencies:
           - tomli ; python_version < '3.11'
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: cc981fcb065527b6de0033b0cbf0432e69781901  # frozen: v4.9.1
+    hooks:
+      - id: commitizen
+  - repo: "https://github.com/TotallyNotRobots/check-spdx-header"
+    rev: '676e6f28a70426914a2e286cbb53696fe2a19381'  # frozen: 0.3.0
+    hooks:
+      - id: fix-spdx-header
+  - repo: local
+    hooks:
+      - id: hatch-fmt
+        entry: hatch fmt
+        language: system
+        name: hatch fmt
+        types:
+          - python
+      - id: hatch-types
+        entry: hatch run types:check
+        language: system
+        name: hatch types
+        types:
+          - python
+  - repo: https://github.com/andreoliwa/nitpick
+    rev: 'a1373f03f5a9394c75cc03e5da1b0cb6ff615dbb'  # frozen: v0.38.0
+    hooks:
+      - id: nitpick
   - repo: https://github.com/PyCQA/autoflake
     rev: '0544741e2b4a22b472d9d93e37d4ea9153820bb1'  # frozen: v2.3.1
     hooks:

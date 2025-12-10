@@ -1,6 +1,7 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "github>TotallyNotRobots/renovate-config"
+        "github>TotallyNotRobots/renovate-config",
+        "github>TotallyNotRobots/renovate-config//configs/hatch-manager.json"
     ]
 }
