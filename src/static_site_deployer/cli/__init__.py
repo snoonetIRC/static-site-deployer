@@ -141,12 +141,11 @@ cli = typer.Typer()
 DeployPath = Annotated[
     Path,
     typer.Argument(
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=False,
+        file_okay=False,
+        dir_okay=True,
+        writable=True,
         readable=True,
-        resolve_path=True,
+        resolve_path=False,
     ),
 ]
 
