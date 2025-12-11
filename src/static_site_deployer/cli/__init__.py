@@ -140,7 +140,7 @@ cli = typer.Typer()
 
 DeployPath = Annotated[
     Path,
-    typer.Option(
+    typer.Argument(
         exists=True,
         file_okay=True,
         dir_okay=False,
@@ -152,7 +152,7 @@ DeployPath = Annotated[
 
 
 @cli.command()
-def check(repo: str, path: DeployPath) -> None:
+def check(repo: Annotated[str, typer.Argument()], path: DeployPath) -> None:
     """Check if deployment is up-to-date.
 
     Arguments:
@@ -163,7 +163,7 @@ def check(repo: str, path: DeployPath) -> None:
 
 
 @cli.command()
-def update(repo: str, path: DeployPath) -> None:
+def update(repo: Annotated[str, typer.Argument()], path: DeployPath) -> None:
     """Update deployment.
 
     Arguments:
