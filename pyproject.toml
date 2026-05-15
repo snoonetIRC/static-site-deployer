@@ -48,7 +48,7 @@ dependencies = [
     "pytest==9.0.3",
     "pre-commit==4.6.0",
     "mypy==2.1.0",
-    "types-requests==2.33.0.20260508",
+    "types-requests==2.33.0.20260513",
 ]
 post-install-commands = ["hatch run pre-commit:install"]
 
