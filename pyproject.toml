@@ -44,7 +44,7 @@ version-file = "src/static_site_deployer/_version.py"
 
 [tool.hatch.envs.default]
 dependencies = [
-    "coverage[toml]==7.14.1",
+    "coverage[toml]==7.14.3",
     "pytest==9.1.1",
     "pre-commit==4.6.1",
     "mypy==2.1.0",
@@ -63,7 +63,7 @@ install = ["pre-commit install {args:-f}"]
 default-args = ["tests", "src"]
 extra-args = ["-vv", "--junitxml=junit.xml"]
 extra-dependencies = [
-    "coverage[toml]==7.14.1",
+    "coverage[toml]==7.14.3",
     "pytest==9.1.1",
 ]
 post-install-commands = []
