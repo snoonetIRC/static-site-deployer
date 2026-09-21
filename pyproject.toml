@@ -9,7 +9,7 @@ description = ""
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
-authors = [{name = "linuxdaemon", email = "linuxdaemon.irc@gmail.com"}]
+authors = [{ name = "linuxdaemon", email = "linuxdaemon.irc@gmail.com" }]
 keywords = []
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -127,6 +127,7 @@ ignore = [
     "COM812", # Conflicts with formatter
     "ISC001", # Conflicts with formatter
     "EXE002", # pre-commit does it better, works with SMB shares
+    "T201", # Ignore prints
 ]
 select = ["ALL"]
 

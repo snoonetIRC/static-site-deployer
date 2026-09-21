@@ -11,7 +11,6 @@ from pathlib import Path
 from shutil import rmtree
 from typing import Annotated
 
-import click
 import requests
 import typer
 from github import Github
@@ -80,7 +79,7 @@ def _do_cleanup(releases_dir: Path) -> None:
     directories = list(releases_dir.glob(f"{RELEASE_PREFIX}*"))
 
     if len(directories) <= HISTORY_COUNT:
-        click.echo("Did not run clean up (too few historic releases)")
+        print("Did not run clean up (too few historic releases)")
         return
 
     def key(d: Path) -> Version:
@@ -93,9 +92,9 @@ def _do_cleanup(releases_dir: Path) -> None:
         rmtree(releases_dir / directory)
 
     if to_remove:
-        click.echo(f"Cleaned up {len(to_remove)} historic releases")
+        print(f"Cleaned up {len(to_remove)} historic releases")
     else:
-        click.echo("No clean up required")
+        print("No clean up required")
 
 
 def _do_update(repo: str, deploy_path: Path) -> None:
@@ -131,7 +130,7 @@ def _do_update(repo: str, deploy_path: Path) -> None:
         current_link.unlink()
 
     current_link.symlink_to(release_dir, target_is_directory=True)
-    click.echo(f"Deployed {release_name}")
+    print(f"Deployed {release_name}")
 
     _do_cleanup(releases_dir)
 

@@ -82,9 +82,15 @@ repos:
   - repo: local
     hooks:
       - id: hatch-fmt
-        entry: hatch fmt
+        entry: hatch check fmt --fix
         language: system
         name: hatch fmt
+        types:
+          - python
+      - id: hatch-check
+        entry: hatch check code --fix
+        language: system
+        name: hatch check
         types:
           - python
       - id: hatch-types
