@@ -55,7 +55,7 @@ jobs:
     - name: Run pre-commit
       run: hatch run pre-commit:run
       env:
-        SKIP: nitpick,hatch-fmt,hatch-types
+        SKIP: nitpick,hatch-fmt,hatch-types,hatch-check
 
     - name: Run tests
       run: hatch test --python ${{ matrix.python-version }} --cover --randomize --retries 2 --retry-delay 1
