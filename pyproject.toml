@@ -218,3 +218,10 @@ headers = [
 [tool.autoflake]
 remove-all-unused-imports = true
 in-place = true
+
+[tool.basedpyright]
+analyzeUnannotatedFunctions = true
+reportUnusedCallResult = "none"
+reportImplicitStringConcatenation = "none"
+reportImportCycles = "none"
+pythonVersion = "3.10"
