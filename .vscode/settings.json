@@ -1,4 +1,11 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": []
+  "basedpyright": {
+    "analysis": {
+      "baselineMode": "discard"
+    }
+  },
+  "python-envs": {
+    "defaultEnvManager": "ms-python.python:system",
+    "pythonProjects": []
+  }
 }
