@@ -121,14 +121,7 @@ extend-safe-fixes = [
     "D415",
     "D200",
 ]
-ignore = [
-    "TRY003", # TODO(aspen): Switch to custom exceptions
-    "PLW1641", # TODO(aspen): Make classes immutable, add __hash__ methods
-    "COM812", # Conflicts with formatter
-    "ISC001", # Conflicts with formatter
-    "EXE002", # pre-commit does it better, works with SMB shares
-    "T201", # Ignore prints
-]
+ignore = ["TRY003", "PLW1641", "COM812", "ISC001", "EXE002", "T201", "CPY001"]
 select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
@@ -188,6 +181,11 @@ enable_error_code = [
 ]
 ignore_missing_imports = true
 
+[tool.pytest]
+minversion = "9.0"
+addopts = ["--doctest-modules"]
+filterwarnings = ["error"]
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 addopts = ["--doctest-modules"]
@@ -218,3 +216,10 @@ headers = [
 [tool.autoflake]
 remove-all-unused-imports = true
 in-place = true
+
+[tool.basedpyright]
+analyzeUnannotatedFunctions = true
+reportUnusedCallResult = "none"
+reportImplicitStringConcatenation = "none"
+reportImportCycles = "none"
+pythonVersion = "3.10"
